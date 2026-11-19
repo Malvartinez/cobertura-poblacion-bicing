@@ -19,21 +19,10 @@ tree = cKDTree(np.c_[nx_, ny_])
 sd, sn = tree.query(np.c_[bas.geometry.x, bas.geometry.y]); sd = np.maximum(sd, 1e-6)
 # grafo sin nodos virtuales (evita atajos entre estaciones); distancia = sd + D[desde nodo enganchado]
 G = sp.coo_matrix((L, (U, V)), shape=(N, N)).tocsr()
-# enganche edificio -> arista (identico a 04)
-geoms = ed.geometry.values; stree = STRtree(geoms)
-pts = bld.geometry.values
-qi, dist = stree.query_nearest(pts, return_distance=True, all_matches=False)
-eg = np.empty(len(pts), dtype=int); eg[qi[0]] = qi[1]
-dp = np.empty(len(pts)); dp[qi[0]] = dist
-line = geoms[eg]; ln = shapely.length(line)
-proj = shapely.line_locate_point(line, pts)
-t = np.where(ln > 0, proj / ln, 0)
-st = shapely.get_point(line, 0)
-sx, sy = shapely.get_x(st), shapely.get_y(st)
-u = U[eg]; v = V[eg]; Le = L[eg]
-du = np.hypot(nx_[u] - sx, ny_[u] - sy); dv = np.hypot(nx_[v] - sx, ny_[v] - sy)
-start = np.where(du <= dv, u, v); end = np.where(du <= dv, v, u)
-a = t * Le; b = (1 - t) * Le
+import sys, os; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# opciones de acceso de cada edificio (identicas a 04)
+from _acceso import accesos, minimo
+ob, on, oo, ini, dp = accesos(P, bld, ed, U, V, L, nx_, ny_)
 pop = bld.poblacion.fillna(0).values.astype(float)
 nb = len(bld)
 p250 = np.zeros(S); p500 = np.zeros(S)
@@ -43,7 +32,7 @@ for i0 in range(0, S, BATCH):
     ids = np.arange(i0, min(S, i0 + BATCH))
     D = dijkstra(G, directed=False, indices=sn[ids], limit=501)  # (B, N)
     D = D + sd[ids][:, None]
-    tot = dp[None, :] + np.minimum(D[:, start] + a[None, :], D[:, end] + b[None, :])
+    tot = minimo(D[:, on] + oo[None, :], ini)
     tot[~np.isfinite(tot)] = np.inf
     mind = np.minimum(mind, tot.min(axis=0))
     p250[ids] = ((tot < 250) * pop[None, :]).sum(axis=1)

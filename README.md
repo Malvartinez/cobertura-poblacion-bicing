@@ -8,7 +8,7 @@ Web: https://malvartinez.github.io/cobertura-poblacion-bicing/
 
 Adaptación a Barcelona de [cobertura-poblacion-bicimad](https://github.com/Malvartinez/cobertura-poblacion-bicimad): mismo método y misma web; las diferencias están en `docs/decisiones.md`.
 
-**Resultado (censo 2025, 544 estaciones):** 65,0 % de la población a < 250 m, 31,8 % a 250–500 m y 3,3 % a más de 500 m. Detalle en `docs/resumen_final.md`.
+**Resultado (censo 2025, 544 estaciones):** 74,1 % de la población a < 250 m, 23,0 % a 250–500 m y 2,9 % a más de 500 m. Detalle en `docs/resumen_final.md`.
 
 ## Qué ofrece la web
 
@@ -31,8 +31,8 @@ Adaptación a Barcelona de [cobertura-poblacion-bicimad](https://github.com/Malv
 ## Método
 
 1. Reparto de la población de cada sección censal entre sus edificios residenciales, proporcional al número de viviendas (la suma cuadra exactamente con el censo).
-2. Cada edificio se engancha a la arista peatonal más cercana; cada base, al nodo más cercano.
-3. Dijkstra multiorigen (scipy) desde todas las bases a la vez, con corte a 1.500 m: distancia de cada edificio a su base más cercana.
+2. Cada edificio accede a la red por su mejor punto: la arista más cercana a su punto interior o cualquier nodo a 30 m o menos de su huella (se suma la distancia hasta el borde). Cada base se engancha al nodo más cercano.
+3. Dijkstra multiorigen (scipy) desde todas las bases a la vez, con corte a 1.500 m: distancia de cada edificio a su base más cercana (mínimo sobre sus puntos de acceso).
 4. Agregados por ciudad, distrito, barrio y sección.
 5. Ranking de estaciones: Dijkstra desde cada base (corte 500 m).
 6. Ampliación: algoritmo voraz con evaluación perezosa (CELF) sobre ~18.500 candidatos (nodos de la red, uno por celda de 50 m), maximizando la mejora ponderada por persona (rojo→amarillo +1, amarillo→verde +1, rojo→verde +2).
@@ -66,7 +66,7 @@ GitHub Actions (`.github/workflows/pages.yml`) publica el contenido de `web/` en
 
 ## Limitaciones
 
-- 1.351 edificios (5.715 hab., casi todos en Vallvidrera, el Tibidabo i les Planes) no tienen ninguna estación a menos de 1.500 m (se cuentan como rojo).
+- 1.346 edificios (5.667 hab., casi todos en Vallvidrera, el Tibidabo i les Planes) no tienen ninguna estación a menos de 1.500 m (se cuentan como rojo).
 - La distancia no considera la pendiente, muy relevante en los barrios de montaña de Barcelona.
 - La ampliación es un ejercicio de máxima cobertura residencial: no considera viabilidad del emplazamiento, demanda, topografía ni coste.
 - Más detalle en `docs/decisiones.md` y `docs/resumen_final.md`.

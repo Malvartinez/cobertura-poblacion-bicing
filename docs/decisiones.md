@@ -23,6 +23,10 @@ ranking con solapes, ampliación CELF) y la web; aquí solo se anotan las difere
 
 ## Resultados a vigilar
 
-- 1.351 edificios (5.715 hab.) sin estación a ≤ 1.500 m por la red: 4.895 en Vallvidrera, el Tibidabo i les Planes (sin Bicing) y 756 en la parte alta de Sarrià — se cuentan como rojo.
+- 1.346 edificios (5.667 hab.) sin estación a ≤ 1.500 m por la red, casi todos en Vallvidrera, el Tibidabo i les Planes (sin Bicing) y la parte alta de Sarrià — se cuentan como rojo.
 - 0 estaciones a más de 150 m de la red peatonal.
 - La distancia es plana: no tiene en cuenta la pendiente, que en Barcelona (Collserola, Carmel, Turó de la Rovira) pesa mucho para el acceso a pie y en bici.
+
+## Distancia desde el borde del edificio (2026-11-19)
+
+- La distancia de cada edificio es la de su mejor punto de acceso: los dos extremos de la arista más cercana a su punto interior (como antes) o cualquier nodo de la red a ≤ 30 m de su huella, sumando la distancia del nodo al borde (`pipeline/_acceso.py`, usado por 04, 07 y 08) — mismo criterio que el proyecto BicinRivas (ADR-0126): en las manzanas grandes el punto interior se enganchaba a la calle de atrás y el método era claramente pesimista. Es algo optimista (supone que el portal da a la calle más favorable). Barcelona pasa de 65,0 % a 74,1 % de población a menos de 250 m.

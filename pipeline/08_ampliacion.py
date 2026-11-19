@@ -23,19 +23,9 @@ L = np.maximum(ed.length.values.astype(float), 1e-6)
 S = len(bas); nb = len(bld)
 tree = cKDTree(np.c_[nx_, ny_])
 sd, sn = tree.query(np.c_[bas.geometry.x, bas.geometry.y]); sd = np.maximum(sd, 1e-6)
-# enganche edificio -> arista (identico a 04)
-geoms = ed.geometry.values; stree = STRtree(geoms); pts = bld.geometry.values
-qi, dist = stree.query_nearest(pts, return_distance=True, all_matches=False)
-eg = np.empty(nb, dtype=int); eg[qi[0]] = qi[1]
-dp = np.empty(nb); dp[qi[0]] = dist
-line = geoms[eg]; ln = shapely.length(line)
-proj = shapely.line_locate_point(line, pts)
-t = np.where(ln > 0, proj / ln, 0)
-st = shapely.get_point(line, 0); sx, sy = shapely.get_x(st), shapely.get_y(st)
-u = U[eg]; v = V[eg]; Le = L[eg]
-du = np.hypot(nx_[u] - sx, ny_[u] - sy); dv = np.hypot(nx_[v] - sx, ny_[v] - sy)
-start = np.where(du <= dv, u, v); end = np.where(du <= dv, v, u)
-a = t * Le; b = (1 - t) * Le
+# opciones de acceso de cada edificio (identicas a 04)
+from _acceso import accesos, minimo
+ob, on, oo, ini, dp = accesos(P, bld, ed, U, V, L, nx_, ny_)
 pop = bld.poblacion.fillna(0).values.astype(float)
 L0 = bld.nivel.values.astype(np.int8)
 R = np.where(L0 > 0)[0]  # edificios que pueden mejorar
@@ -57,7 +47,8 @@ if not os.path.exists(cf):
 cand = np.load(cf)["cand"]
 # --- cobertura por candidato (CSR por chunks) ---
 G = sp.coo_matrix((L, (U, V)), shape=(N, N)).tocsr()
-sR, eR, aR, bR, dR = start[R], end[R], a[R], b[R], dp[R]
+mR = np.isin(ob, R); onR, ooR, obR = on[mR], oo[mR], ob[mR]
+iniR = np.r_[0, np.flatnonzero(np.diff(obR)) + 1]; assert len(iniR) == len(R)
 nch = (len(cand) + CHUNK - 1) // CHUNK
 for ch in range(nch):
     f = P + f"ampliacion_cobertura_{ch:03d}.npz"
@@ -65,7 +56,7 @@ for ch in range(nch):
     cs = cand[ch * CHUNK:(ch + 1) * CHUNK]; ptr = [0]; BI = []; LV = []
     for i0 in range(0, len(cs), BATCH):
         D = dijkstra(G, directed=False, indices=cs[i0:i0 + BATCH], limit=501)
-        tot = dR[None, :] + np.minimum(D[:, sR] + aR[None, :], D[:, eR] + bR[None, :])
+        tot = minimo(D[:, onR] + ooR[None, :], iniR)
         del D
         for row in tot:
             j = np.where(row <= 500)[0]
@@ -121,7 +112,7 @@ def coverage(nodes):
     nn = len(nodes); vs = N + np.arange(S + nn)
     Gv = sp.coo_matrix((np.r_[L, sd, np.full(nn, 1e-6)], (np.r_[U, N + np.arange(S), N + S + np.arange(nn)], np.r_[V, sn, nodes])), shape=(N + S + nn, N + S + nn)).tocsr()
     D = dijkstra(Gv, directed=False, indices=vs, min_only=True, limit=600)[:N]
-    tot = dp + np.minimum(D[start] + a, D[end] + b)
+    tot = minimo(D[on] + oo, ini)
     lev = np.where(~np.isfinite(tot), 2, np.where(tot < 250, 0, np.where(tot <= 500, 1, 2)))
     return [pop[lev == k].sum() for k in range(3)]
 val = []; vmax = 0
