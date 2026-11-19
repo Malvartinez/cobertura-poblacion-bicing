@@ -151,3 +151,19 @@ tbody tr{cursor:pointer}tbody tr:hover{background:var(--bg-surface-2)}
 @keyframes simpulso{0%{box-shadow:0 0 0 0 rgba(255,79,216,.6)}70%{box-shadow:0 0 0 12px rgba(255,79,216,0)}100%{box-shadow:0 0 0 0 rgba(255,79,216,0)}}
 @media(max-width:800px){.sim .sim-l{display:none}.sim .sim-s{display:inline}.sim{padding:5px 12px 5px 9px;font-size:12px}.top .brand{display:none}}
 @media (prefers-reduced-motion:reduce){.sim{animation:none;transition:none}}
+
+/* movil: pagina con desplazamiento normal (mapa arriba, panel completo debajo). Con alto fijo de pantalla el panel
+   quedaba en un 45 % sin poder desplazarse y la barra del navegador tapaba el final. */
+@media(max-width:800px){
+  html,body{height:auto;min-height:100%}
+  body{display:block;overflow-x:hidden;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
+  .top{position:sticky;top:0}
+  .app{display:block}
+  .mapwrap{height:58vh;height:58svh;min-height:260px}
+  .panel{display:block;width:100%;height:auto;overflow:visible;transition:none}
+  .panel.closed{display:none}
+  .floating#collapse{display:none}
+  .tabs{position:sticky;top:46px;z-index:4;background:var(--bg-panel)}
+  .body,.amp,.amp .body{flex:none;overflow:visible;min-height:0;max-height:none}
+  .tools{flex-wrap:wrap}
+}

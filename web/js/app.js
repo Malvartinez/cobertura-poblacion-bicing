@@ -33,6 +33,10 @@
     sk: 'a', sord: 'desc', sq: '', near: false, k: 0
   };
   var AMP = { curve: null, pts: null, rows: [], drawn: 0, max: 0, raf: 0 };
+  // movil: la pagina se desplaza (mapa arriba, panel debajo)
+  var movil = function () { return window.matchMedia && window.matchMedia('(max-width: 800px)').matches; };
+  function verMapa() { if (movil()) try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); } }
+  function verPanel() { if (movil()) { var t = document.querySelector('.tabs'); if (t) try { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { t.scrollIntoView(); } } }
   var ampOn = function () { return S.tab === 'amp' && !!AMP.curve && !!AMP.pts; };
   var meta = {}, agg = null, geo = {}, bases = null, hasPM = false, map, popup;
   var val = function (p, k) { var x = p[k]; return x == null || x === '' ? null : Number(x); };
@@ -260,7 +264,7 @@
   function zoomTo(level, cod) {
     if (S.level !== level) setLevel(level);
     var f = (geo[level] ? geo[level].features : []).filter(function (x) { return String(x.properties.cod) === String(cod); })[0];
-    if (f && map) map.fitBounds(bbox(f), { padding: 40, maxZoom: 15, duration: 600 });
+    if (f && map) { verMapa(); map.fitBounds(bbox(f), { padding: 40, maxZoom: 15, duration: 600 }); }
   }
 
   // ---------- panel ----------
@@ -381,7 +385,7 @@
   $('#stlist').addEventListener('click', function (e) {
     var r = e.target.closest('.rk'), f = r && baseById(r.dataset.id);
     if (!f || !map) return;
-    map.flyTo({ center: f.geometry.coordinates, zoom: 16, duration: 700 });
+    verMapa(); map.flyTo({ center: f.geometry.coordinates, zoom: 16, duration: 700 });
     showPopup(f.geometry.coordinates, stationPopup(f.properties));
   });
   $('#seg-st').onclick = function (e) {
@@ -494,7 +498,7 @@
   $('#amplist').addEventListener('mouseleave', function () { ampHl(-1); });
   $('#amplist').addEventListener('click', function (e) {
     var r = e.target.closest('.rk'), c = r && AMP.coords[r.dataset.r];
-    if (c && map) map.flyTo({ center: c, zoom: 15.5, duration: 700 });
+    if (c && map) { verMapa(); map.flyTo({ center: c, zoom: 15.5, duration: 700 }); }
   });
 
   function renderAll() { renderSum(); renderRank(); renderTable(); renderStations(); }
@@ -525,6 +529,7 @@
     var p = $('#panel');
     if (p.classList.contains('closed')) { p.classList.remove('closed'); $('#collapse').textContent = '⇥'; if (map) setTimeout(function () { map.resize(); }, 250); }
     $('.tabs button[data-tab="' + (S.tab === 'amp' ? 'rank' : 'amp') + '"]').click();
+    verPanel();
   };
   $('#seg-rank').onclick = function (e) {
     if (!e.target.dataset.v) return;
