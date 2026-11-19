@@ -4,6 +4,8 @@ Calcula qué población de Barcelona vive a menos de 250 m (verde), entre 250 y 
 
 Web: https://malvartinez.github.io/cobertura-poblacion-bicing/
 
+> **Comparativa nacional:** esta ciudad está incluida, con el mismo método y datos actualizados, en [Cobertura bici pública](https://malvartinez.github.io/cobertura-bici-publica-espana/) ([código](https://github.com/Malvartinez/cobertura-bici-publica-espana)), que compara los sistemas de bicicleta pública de las grandes ciudades españolas.
+
 Adaptación a Barcelona de [cobertura-poblacion-bicimad](https://github.com/Malvartinez/cobertura-poblacion-bicimad): mismo método y misma web; las diferencias están en `docs/decisiones.md`.
 
 **Resultado (censo 2025, 544 estaciones):** 65,0 % de la población a < 250 m, 31,8 % a 250–500 m y 3,3 % a más de 500 m. Detalle en `docs/resumen_final.md`.
