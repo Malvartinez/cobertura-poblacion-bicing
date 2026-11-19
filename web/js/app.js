@@ -510,9 +510,22 @@
       ['#st-tools', '#st-tools2', '#st-note', '#st-sum'].forEach(function (i) { $(i).hidden = t !== 'est'; });
       if (t !== 'est') hlBase(null);
       if (t === 'amp' && AMP.curve) ampRender();
-      renderLegend(); applyAmpMode();
+      renderLegend(); applyAmpMode(); simLabel();
     };
   });
+  // boton destacado de la barra superior: abre (o cierra) el simulador de ampliacion
+  function simLabel() {
+    var on = S.tab === 'amp', b = $('#sim');
+    b.classList.toggle('on', on);
+    b.querySelector('.sim-ic').textContent = on ? '←' : '＋';
+    b.querySelector('.sim-l').textContent = on ? 'Volver al análisis' : 'Simula una ampliación del sistema';
+    b.querySelector('.sim-s').textContent = on ? 'Volver' : 'Simular ampliación';
+  }
+  $('#sim').onclick = function () {
+    var p = $('#panel');
+    if (p.classList.contains('closed')) { p.classList.remove('closed'); $('#collapse').textContent = '⇥'; if (map) setTimeout(function () { map.resize(); }, 250); }
+    $('.tabs button[data-tab="' + (S.tab === 'amp' ? 'rank' : 'amp') + '"]').click();
+  };
   $('#seg-rank').onclick = function (e) {
     if (!e.target.dataset.v) return;
     S.rl = e.target.dataset.v;
@@ -584,6 +597,7 @@
   Promise.all(pr).then(function () {
     if (AMP.curve && AMP.pts) ampInit(); else { AMP.curve = AMP.pts = null; $('#amp-top').innerHTML = '<div class="empty">Datos de ampliación no disponibles</div>'; }
     renderLegend(); renderAll(); init();
+    $('#sim').hidden = !(AMP.curve && AMP.pts);
     if (!store.get('bicing_visto')) openOb();
   });
 })();
