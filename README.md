@@ -2,6 +2,8 @@
 
 Calcula qué población de Barcelona vive a menos de 250 m (verde), entre 250 y 500 m (amarillo) o a más de 500 m (rojo) andando de la estación de Bicing más cercana. Las distancias se miden sobre la red peatonal real, no en línea recta. Los resultados se publican en una web estática con mapa, rankings y un simulador de ampliación de la red.
 
+Web: https://malvartinez.github.io/cobertura-poblacion-bicing/
+
 Adaptación a Barcelona de [cobertura-poblacion-bicimad](https://github.com/Malvartinez/cobertura-poblacion-bicimad): mismo método y misma web; las diferencias están en `docs/decisiones.md`.
 
 **Resultado (censo 2025, 544 estaciones):** 65,0 % de la población a < 250 m, 31,8 % a 250–500 m y 3,3 % a más de 500 m. Detalle en `docs/resumen_final.md`.
