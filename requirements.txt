@@ -1,0 +1,13 @@
+geopandas>=1.0
+shapely>=2.0
+pyogrio
+osmnx>=2.0
+networkx
+scipy
+pandas
+pyarrow
+requests
+pmtiles>=3.4
+mapbox-vector-tile>=2.0
+mercantile
+osmium>=4.0
