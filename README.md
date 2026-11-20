@@ -8,7 +8,7 @@ Web: https://malvartinez.github.io/cobertura-poblacion-bicing/
 
 Adaptación a Barcelona de [cobertura-poblacion-bicimad](https://github.com/Malvartinez/cobertura-poblacion-bicimad): mismo método y misma web; las diferencias están en `docs/decisiones.md`.
 
-**Resultado (censo 2025, 544 estaciones):** 74,1 % de la población a < 250 m, 23,0 % a 250–500 m y 2,9 % a más de 500 m. Detalle en `docs/resumen_final.md`.
+**Resultado (censo 2025, 544 estaciones):** 72,8 % de la población a < 250 m, 24,2 % a 250–500 m y 3,0 % a más de 500 m. Detalle en `docs/resumen_final.md`.
 
 ## Qué ofrece la web
 
@@ -31,7 +31,7 @@ Adaptación a Barcelona de [cobertura-poblacion-bicimad](https://github.com/Malv
 ## Método
 
 1. Reparto de la población de cada sección censal entre sus edificios residenciales, proporcional al número de viviendas (la suma cuadra exactamente con el censo).
-2. Cada edificio accede a la red por su mejor punto: la arista más cercana a su punto interior o cualquier nodo a 30 m o menos de su huella (se suma la distancia hasta el borde). Cada base se engancha al nodo más cercano.
+2. Cada edificio accede a la red por sus portales (Catastro INSPIRE Addresses, direcciones de tipo portal): cada portal se engancha a la arista más cercana —o a la de su calle si está en una esquina— y la distancia es la del mejor portal. Los edificios sin portal en el Catastro usan su mejor punto de la fachada: la arista más cercana a su punto interior o cualquier nodo a 30 m o menos de su huella (sumando la distancia hasta el borde). Cada base se engancha al nodo más cercano.
 3. Dijkstra multiorigen (scipy) desde todas las bases a la vez, con corte a 1.500 m: distancia de cada edificio a su base más cercana (mínimo sobre sus puntos de acceso).
 4. Agregados por ciudad, distrito, barrio y sección.
 5. Ranking de estaciones: Dijkstra desde cada base (corte 500 m).
