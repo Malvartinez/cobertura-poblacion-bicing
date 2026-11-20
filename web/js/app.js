@@ -603,6 +603,6 @@
     if (AMP.curve && AMP.pts) ampInit(); else { AMP.curve = AMP.pts = null; $('#amp-top').innerHTML = '<div class="empty">Datos de ampliación no disponibles</div>'; }
     renderLegend(); renderAll(); init();
     $('#sim').hidden = !(AMP.curve && AMP.pts);
-    if (!store.get('bicing_visto')) openOb();
+    if (!store.get('bicing_visto')) { store.set('bicing_visto', '1'); openOb(); }
   });
 })();
